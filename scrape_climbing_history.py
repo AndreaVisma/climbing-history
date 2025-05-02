@@ -6,6 +6,8 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import numpy as np
 import dateparser
+import re
+from dateutil import parser
 
 ### first find all the links for the individual pages of each climb
 # Base URL for the paginated pages
@@ -23,7 +25,7 @@ all_grades = []
 # Loop through pages 1 to 200 (after page 200 the climbs have zero ascents)
 skipped_pages = []
 skipped_urls = []
-for page in tqdm(range(1, 200)):  # Adjust range as needed
+for page in tqdm(range(1, 230)):  # Adjust range as needed
     # Construct the URL for the current page
     url = base_url + str(page)
 
@@ -133,14 +135,23 @@ df.Route = df.Route.apply(lambda x: " ".join(word.capitalize() for word in x.spl
 
 # Function to parse mixed date formats
 def parse_date(entry):
-    if isinstance(entry, str):
-        # Use dateparser to parse natural language dates
-        parsed_date = dateparser.parse(entry)
-        if parsed_date:
-            return parsed_date.strftime('%d-%m-%Y')  # Convert to 'YYYY-MM-DD' format
-    return None  # For unparseable entries or NaNs
+    clean_str = re.sub(r'(\d+)(st|nd|rd|th)', r'\1', entry)
+    try:
+        return parser.parse(clean_str, dayfirst=True)
+    except Exception:
+        return pd.NaT
 
 # Apply the function to the 'dates' column
 df['parsed_dates'] = df['Ascent Date'].apply(parse_date)
 
-df.to_excel("c://data//climbing//climbing_history_all_cleanish.xlsx", index = False)
+df.to_csv("c://data//climbing//climbing_history_all_02_05.csv", index = False)
+
+# #################################
+# df_old = pd.read_excel("c://data//climbing//dataset_with_routes_location.xlsx")[
+#     ["Route", "longitude", "latitude", "inferred_country"]].drop_duplicates("Route")
+# df_new = pd.read_csv("c://data//climbing//climbing_history_all_31_03.csv")
+#
+# df_new = df_new.merge(df_old, on = "Route", how = 'left')
+# df_new.to_csv("c://data//climbing//climbing_history_all_31_03.csv", index = False)
+
+
