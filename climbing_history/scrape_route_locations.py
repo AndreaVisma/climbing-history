@@ -19,9 +19,9 @@ from geopy.geocoders import Nominatim
 #base url for the website
 base_url = "https://climbing-history.org"
 
-with open('all_climb_links.txt', 'r', encoding='utf-8') as file:
+with open('../all_climb_links.txt', 'r', encoding='utf-8') as file:
     all_climb_links = file.read().splitlines()
-with open('all_grades.txt', 'r', encoding='utf-8') as file:
+with open('../all_grades.txt', 'r', encoding='utf-8') as file:
     all_grades = file.read().splitlines()
 dict_grades = dict(zip(all_climb_links, all_grades))
 
@@ -96,7 +96,7 @@ df_comp.to_excel("c://data//climbing//dataset_with_routes_location.xlsx", index 
 
 print(df_comp[~df_comp.Route.duplicated()].isna().sum())
 missing_links = df_comp[(~df_comp.Route.duplicated()) & (df_comp.latitude.isna())]['link_x'].tolist()
-with open('links_for_which_i_couldnt_scrape_location.txt', 'w', encoding='utf-8') as file:
+with open('../links_for_which_i_couldnt_scrape_location.txt', 'w', encoding='utf-8') as file:
     file.write("\n".join(missing_links))
 
 ###########

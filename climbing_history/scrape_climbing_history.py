@@ -66,18 +66,18 @@ for page in tqdm(range(1, 230)):  # Adjust range as needed
 print(f"Total links found: {len(all_climb_links)}")
 
 # Save all links and grades files
-with open('all_climb_links.txt', 'w', encoding='utf-8') as file:
+with open('../all_climb_links.txt', 'w', encoding='utf-8') as file:
     file.write("\n".join(all_climb_links))
-with open('all_grades.txt', 'w', encoding='utf-8') as file:
+with open('../all_grades.txt', 'w', encoding='utf-8') as file:
     file.write("\n".join(all_grades))
 
 ## now scrape info from all of the individual pages
 #base url for the website
 base_url = "https://climbing-history.org"
 
-with open('all_climb_links.txt', 'r', encoding='utf-8') as file:
+with open('../all_climb_links.txt', 'r', encoding='utf-8') as file:
     all_climb_links = file.read().splitlines()
-with open('all_grades.txt', 'r', encoding='utf-8') as file:
+with open('../all_grades.txt', 'r', encoding='utf-8') as file:
     all_grades = file.read().splitlines()
 dict_grades = dict(zip(all_climb_links, all_grades))
 
