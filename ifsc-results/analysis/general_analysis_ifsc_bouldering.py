@@ -8,9 +8,13 @@ import seaborn as sns
 sns.set(style="whitegrid")
 plt.rcParams['figure.figsize'] = (12, 6)
 
-def load_and_prepare_data(filepath):
+def load_and_prepare_data(filepaths):
     """Load and prepare the data"""
-    df = pd.read_csv(filepath)
+
+    df = pd.DataFrame([])
+    for path in filepaths:
+        df_ = pd.read_csv(path)
+        df = pd.concat([df, df_])
 
     #fix rounds flags
     df.loc[df["round"] == 'Semi-Final', 'round'] = 'Semi-final'
@@ -256,8 +260,9 @@ def temporal_analysis(df):
 
 def main():
     # Load your data - replace with your actual file path
-    filepath = 'C:\\Data\\climbing\\bouldering_Worldcups_2021_to_2024.csv'
-    df = load_and_prepare_data(filepath)
+    filepaths = ['C:\\Data\\climbing\\bouldering_Worldcups_2015_to_2019.csv',
+                 'C:\\Data\\climbing\\bouldering_Worldcups_2021_to_2024.csv']
+    df = load_and_prepare_data(filepaths)
 
     # Run analyses
     general_overview(df)

@@ -104,6 +104,6 @@ for link in tqdm(all_comp_links):
         print(f"Something failed for link: {link}")
         failed_links.append(link)
 
-df_all_results.to_csv('C:\\Data\\climbing\\bouldering_Worldcups_2021_to_2024.csv', index = False)
+df_all_results.to_csv('C:\\Data\\climbing\\bouldering_Worldcups_2015_to_2019.csv', index = False)
 
 driver.quit()
