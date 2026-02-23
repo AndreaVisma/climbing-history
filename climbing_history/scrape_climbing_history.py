@@ -1,3 +1,4 @@
+
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
@@ -123,15 +124,21 @@ for link in tqdm(all_climb_links):
             cells.append(link)
             data.append(cells)
 
-header = ['Climber', 'Style', 'Ascent Date', 'Suggested Grade', 'link']
+header = ['ph', 'climber', 'style', 'ascent_date', 'suggested_grade', 'link']
 # Create a DataFrame
 df = pd.DataFrame(data, columns=header)
+df = df[['climber', 'style', 'ascent_date', 'suggested_grade', 'link']]
 df = df.replace({None: np.nan})
 df.dropna(inplace = True)
 
-df['Route'] = df['link'].apply(lambda x: x.split("/")[-1])  # add climb name column by taking it from the link
-df['Official grade'] = df.link.map(dict_grades)
-df.Route = df.Route.apply(lambda x: " ".join(word.capitalize() for word in x.split("-")))
+df['route'] = df['link'].apply(lambda x: x.split("/")[-1])  # add climb name column by taking it from the link
+df['official_grade'] = df.link.map(dict_grades)
+df['official_grade'] = df['official_grade'].apply(lambda x: x.replace(" (approx)", ""))
+df.route = df.route.apply(lambda x: " ".join(word.capitalize() for word in x.split("-")))
+
+###
+df[['style', 'work']] = df['style'].str.split('|', expand=True)
+df['style'] = df['style'].apply(lambda x: x.strip())
 
 # Function to parse mixed date formats
 def parse_date(entry):
@@ -142,16 +149,9 @@ def parse_date(entry):
         return pd.NaT
 
 # Apply the function to the 'dates' column
-df['parsed_dates'] = df['Ascent Date'].apply(parse_date)
+df['parsed_date'] = df['ascent_date'].apply(parse_date)
 
-df.to_csv("c://data//climbing//climbing_history_all_02_05.csv", index = False)
+df.to_excel("c://data//climbing//climbing_history_all_23_02_2026.xlsx", index = False)
 
-# #################################
-# df_old = pd.read_excel("c://data//climbing//dataset_with_routes_location.xlsx")[
-#     ["Route", "longitude", "latitude", "inferred_country"]].drop_duplicates("Route")
-# df_new = pd.read_csv("c://data//climbing//climbing_history_all_31_03.csv")
-#
-# df_new = df_new.merge(df_old, on = "Route", how = 'left')
-# df_new.to_csv("c://data//climbing//climbing_history_all_31_03.csv", index = False)
 
 
